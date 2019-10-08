@@ -13,15 +13,17 @@ const dbUser = process.env.dbAtlasUserName;
 const dbPassword = process.env.dbAtlasPassword;
 
 mongoose.connect(
-  `mongodb+srv://${dbUser}:${dbPassword}@cs4660-4yw3q.mongodb.net/MoviesCS4660?retryWrites=true&w=majority`,
-  { useNewUrlParser: true, useUnifiedTopology: true }
+  `mongodb+srv://${dbUser}:${dbPassword}@cs4660-4yw3q.mongodb.net/MoviesCS4660?retryWrites=true&w=majority`, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  }
 );
 
 const conn = mongoose.connection;
 conn.on('error', console.error.bind(console, 'connection error:'));
 // Queries
 conn.once('open', async () => {
-  // a. Add a new agent of your own
+  // query a. Add a new agent of your own
   // const newAgent = new Agent({
   //   firstName: 'Carl',
   //   lastName: 'Michael',
@@ -30,7 +32,7 @@ conn.once('open', async () => {
   // newAgent.save().then(() => {
   //   console.log('New Agent Saved.');
   // });
-  // b. Add 2 new actors of your own to your new agent
+  // query b. Add 2 new actors of your own to your new agent
   // const newActor1 = new Actor({
   //   firstName: 'Brad',
   //   lastName: 'Pitt',
@@ -68,7 +70,7 @@ conn.once('open', async () => {
   //   );
   // });
 
-  // c. Add new movie of your own, use your new actors plus 1 existing actor plus existing director
+  // query c. Add new movie of your own, use your new actors plus 1 existing actor plus existing director
   // const newMovie = new Movie({
   //   title: "Ocean's Eleven",
   //   year: 2001,
@@ -102,7 +104,7 @@ conn.once('open', async () => {
   //   console.log(`Movie ${movie.title} was succesfully saved.`);
   // });
 
-  // d. Change birth on an actor
+  // query d. Change birth on an actor
   // await Actor.findOneAndUpdate(
   //   { firstName: 'Brad', lastName: 'Pitt' },
   //   { birthDate: 1964 },
@@ -112,10 +114,88 @@ conn.once('open', async () => {
   //   }
   // );
 
-  // e. Change movie title
-  await Movie.findOneAndUpdate({ title: 'Heat 2' }, { title: 'Heat 3' }, (err, movie) => {
-    if (err) throw err;
-    console.log(movie);
-    console.log(`Movie ${movie.title} title has been changed.`);
-  });
+  // query e. Change movie title
+//   await Movie.findOneAndUpdate({ title: 'Heat 2' }, { title: 'Heat 3' }, (err, movie) => {
+//     if (err) throw err;
+//     console.log(movie);
+//     console.log(`Movie ${movie.title} title has been changed.`);
+//   });
+// });
+
+  // query f. List all movies (include director and actors)
+  // Movie.find({}, (movies, err) => {
+  //   if (err) {
+  //     console.error('something is wrong', err);
+  //   }
+  //   else {
+  //     console.log(movies);
+  //   }
+  //   conn.close();
+  // })
+
+  // query g. List all movies with a specific director (include actors)
+  // Director.findOne({
+  //   firstName: 'Sofia',
+  //   lastName: 'Coppola'
+  // }, (err, dir) => {
+  //   if (err) {
+  //     console.error('director query failed', err);
+  //     conn.close();
+  //   } else {
+  //     console.log("All movies by", dir.firstName, dir.lastName, ":");
+  //     Movie.find({director: dir.id}).populate('actors').exec((err, movies) => {
+  //       if (err) {
+  //         console.error('movie query failed', err);
+  //         conn.close();
+  //       } else {
+  //         movies.forEach((movie)=> {
+  //           console.log(movie.title, movie.year);
+  //           console.log('actors:')
+  //           movie.actors.forEach((actor)=> {
+  //             console.log('\t', actor.firstName, actor.lastName);
+  //           })
+  //         })
+  //         conn.close();
+  //       }
+  //     })
+  //   }
+  // })
+
+  // query h. List all movies with a specific actor (include director and actors)
+  Actor.findOne({
+    firstName: "Scarlett",
+    lastName: "Johansson"
+  }, (err, actor) => {
+    if (err) {
+      console.error("something went wrong with Actor query", err);
+      conn.close();
+    } else {
+      console.log("Movies with", actor.firstName, actor.lastName, "in it:");
+      Movie.find({
+          actors: actor.id
+        })
+        .populate('actors')
+        .populate('director')
+        .exec((err, movies) => {
+          if (err) {
+            console.error("something went wrong with Movie query", err);
+            conn.close();
+          } else {
+            movies.forEach((movie) => {
+              console.log(movie.title, '-', movie.year);
+              console.log('\tdirector:', movie.director.firstName, movie.director.lastName);
+              console.log('\tactors:')
+              movie.actors.forEach((actor) => {
+                console.log('\t\t', actor.firstName, actor.lastName);
+              })
+              conn.close();
+            })
+          }
+        })
+    }
+  })
+  // query i. List all actors with a specific agent
+  // query j. List all movies using an actor with a specific agent
+  // query k. How many actors does a specific agent represent?
+
 });
