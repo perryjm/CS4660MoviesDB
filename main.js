@@ -22,13 +22,58 @@ conn.on('error', console.error.bind(console, 'connection error:'));
 // Queries
 conn.once('open', () => {
   // a. Add a new agent of your own
-  const newAgent = new Agent({
-    firstName: 'Carl',
-    lastName: 'Michael',
-    birthDate: '1980'
-  });     
-  newAgent.save().then(() => {
-    console.log('New Agent Saved.');
-  });
+  // const newAgent = new Agent({
+  //   firstName: 'Carl',
+  //   lastName: 'Michael',
+  //   birthDate: '1980'
+  // });     
+  // newAgent.save().then(() => {
+  //   console.log('New Agent Saved.');
+  // });
+
+  // query f. List all movies (include director and actors)
+  Movie.find({}, (movies, err) => {
+    if (err) {
+      console.error('something is wrong', err);
+    }
+    else {
+      console.log(movies);
+    }
+    conn.close();
+  })
+
+  // query g. List all movies with a specific director (include actors)
+  Director.findOne({
+    firstName: 'Sofia',
+    lastName: 'Coppola'
+  }, (err, dir) => {
+    if (err) {
+      console.error('director query failed', err);
+      conn.close();
+    } else {
+      console.log("All movies by", dir.firstName, dir.lastName, ":");
+      Movie.find({director: dir.id}).populate('actors').exec((err, movies) => {
+        if (err) {
+          console.error('movie query failed', err);
+          conn.close();
+        } else {
+          movies.forEach((movie)=> {
+            console.log(movie.title, movie.year);
+            console.log('actors:')
+            movie.actors.forEach((actor)=> {
+              console.log('\t', actor.firstName, actor.lastName);
+            })
+          })
+          conn.close();
+        }
+      })
+    }
+  })
+
+  // query h. List all movies with a specific actor (include director and actors)
+  // Movie.find()
+  // query i. List all actors with a specific agent
+  // query j. List all movies using an actor with a specific agent
+  // query k. How many actors does a specific agent represent?
+
 });
-conn.close();
