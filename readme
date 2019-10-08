@@ -1,0 +1,4 @@
+-** Don't run any file on loadTables. It will duplicate data and modify the current Schema **-
+
+- npm install
+- create .env file (Mario has the env variables needed)
