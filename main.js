@@ -73,40 +73,98 @@ conn.once('open', () => {
   // })
 
   // query h. List all movies with a specific actor (include director and actors)
-  Actor.findOne({
-    firstName: "Scarlett",
-    lastName: "Johansson"
-  }, (err, actor) => {
-    if (err) {
-      console.error("something went wrong with Actor query", err);
-      conn.close();
-    } else {
-      console.log("Movies with", actor.firstName, actor.lastName, "in it:");
-      Movie.find({
-          actors: actor.id
-        })
-        .populate('actors')
-        .populate('director')
-        .exec((err, movies) => {
-          if (err) {
-            console.error("something went wrong with Movie query", err);
-            conn.close();
-          } else {
-            movies.forEach((movie) => {
-              console.log(movie.title, '-', movie.year);
-              console.log('\tdirector:', movie.director.firstName, movie.director.lastName);
-              console.log('\tactors:')
-              movie.actors.forEach((actor) => {
-                console.log('\t\t', actor.firstName, actor.lastName);
-              })
-              conn.close();
-            })
-          }
-        })
-    }
-  })
+  // Actor.findOne({
+  //   firstName: "Scarlett",
+  //   lastName: "Johansson"
+  // }, (err, actor) => {
+  //   if (err) {
+  //     console.error("something went wrong with Actor query", err);
+  //     conn.close();
+  //   } else {
+  //     console.log("Movies with", actor.firstName, actor.lastName, "in it:");
+  //     Movie.find({
+  //         actors: actor.id
+  //       })
+  //       .populate('actors')
+  //       .populate('director')
+  //       .exec((err, movies) => {
+  //         if (err) {
+  //           console.error("something went wrong with Movie query", err);
+  //           conn.close();
+  //         } else {
+  //           movies.forEach((movie) => {
+  //             console.log(movie.title, '-', movie.year);
+  //             console.log('\tdirector:', movie.director.firstName, movie.director.lastName);
+  //             console.log('\tactors:')
+  //             movie.actors.forEach((actor) => {
+  //               console.log('\t\t', actor.firstName, actor.lastName);
+  //             })
+  //             conn.close();
+  //           })
+  //         }
+  //       })
+  //   }
+  // })
+
   // query i. List all actors with a specific agent
+  // Agent.findOne({
+  //     firstName: "Carl",
+  //     lastName: "Michael"
+  //   })
+  //   .populate('actors')
+  //   .exec((err, agent) => {
+  //     if (err) {
+  //       console.error('Something went wrong on agent query', err);
+  //       conn.close();
+  //     } else {
+  //       conn.close();
+  //       console.log("Agent", agent.firstName, agent.lastName, "has the following actors:");
+  //       agent.actors.forEach((actor) => {
+  //         console.log('\t', actor.firstName, actor.lastName);
+  //       })
+  //     }
+  //   })
+
   // query j. List all movies using an actor with a specific agent
+  // Agent.findOne({
+  //     firstName: "Carl",
+  //     lastName: "Michael"
+  //   })
+  //   .populate({
+  //     path: 'actors',
+  //     populate: {
+  //       path: 'movies',
+  //       select: 'title'
+  //     }
+  //   })
+  //   .exec((err, agent) => {
+  //     if (err) {
+  //       console.error('Something went wrong on agent query', err);
+  //       conn.close();
+  //     } else {
+  //       conn.close();
+  //       console.log("Agent", agent.firstName, agent.lastName, "has the following actors:");
+  //       console.log(agent.actors)
+  //       agent.actors.forEach((actor) => {
+  //         console.log('\t', actor.firstName, actor.lastName);
+  //         actor.movies.forEach((movie) => {
+  //           console.log('\t\t', movie.title);
+  //         })
+  //       })
+  //     }
+  //   })
+
   // query k. How many actors does a specific agent represent?
+  // Agent.findOne({
+  //   firstName: "Carl",
+  //   lastName: "Michael"
+  // }, (err, agent) => {
+  //   if (err) {
+  //     console.error("something went wrong with agenet query")
+  //   } else {
+  //     console.log("Agent", agent.firstName, agent.lastName, "has", agent.actors.length, "actors.");
+  //   }
+  //   conn.close();
+  // })
 
 });
